@@ -1,5 +1,9 @@
-import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {Link, withRouter} from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { registerUser } from '../../actions/authActions';
+import classnames from 'classnames';
 
 const Register = () => {
   const initialFormState = {
@@ -20,8 +24,22 @@ const Register = () => {
   const onSubmit = e => {
     e.preventDefault();
 
-    console.log(user);
+    const newUser = user;
+
+    props.registerUser(newUser, props.history)
   }
+
+  useEffect(() => {
+    if (props.auth.isAuthenticated) {
+      props.history.push('/dashboard');
+    }
+  }, [])
+
+  useEffect(()=>{
+    if(props.errors) {
+      setErrors(props.errors)
+    }
+  }, [props.errors])
 
   return (
     <div>
@@ -38,8 +56,12 @@ const Register = () => {
             name='name'
             id="name"
             type="text"
+            className={classnames("", {
+              invalid: errors.name
+            })}
           />
-          <label htmlFor="name">Name</label>          
+          <label htmlFor="name">Name</label>   
+          <span className="red-text">{errors.name}</span>       
         </div>
 
         <div>
@@ -50,8 +72,12 @@ const Register = () => {
             name='email'
             id="email"
             type="email"
+            className={classnames("", {
+              invalid: errors.email
+            })}
           />
-          <label htmlFor="email">Email</label>          
+          <label htmlFor="email">Email</label>  
+          <span className="red-text">{errors.email}</span>        
         </div>
 
         <div>
@@ -62,8 +88,12 @@ const Register = () => {
             name='password'
             id="password"
             type="password"
+            className={classnames("", {
+              invalid: errors.password
+            })}
           />
-          <label htmlFor="password">Password</label>          
+          <label htmlFor="password">Password</label>   
+          <span className="red-text">{errors.password}</span>       
         </div>
 
         <div>
@@ -74,8 +104,12 @@ const Register = () => {
             name='password2'
             id="password2"
             type="password"
+            className={classnames("", {
+              invalid: errors.password2
+            })}
           />
-          <label htmlFor="password2">Confirm Password</label>          
+          <label htmlFor="password2">Confirm Password</label>     
+          <span className="red-text">{errors.password2}</span>     
         </div>
 
         <button>Sign Up</button>
@@ -84,4 +118,18 @@ const Register = () => {
   )
 }
 
-export default Register
+Register.propTypes = {
+  registerUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(
+  mapStateToProps,
+  {registerUser}
+)(withRouter(Register));
