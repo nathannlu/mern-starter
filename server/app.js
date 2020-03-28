@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv')
 const passport = require('passport');
-const userRoutes = require('./api/routes/api/user_routes');
+const userRoutes = require('./src/routes/api/user_routes');
 const app = express();
 
 // Import enviornment variables
@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 
 // Passport config initialization
 app.use(passport.initialize());
-require('./api/passport')(passport);
+require('./src/passport')(passport);
 
 // Routes
 app.use('/api/users', userRoutes);
