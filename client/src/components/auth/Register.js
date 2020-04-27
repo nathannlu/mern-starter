@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { registerUser } from '../../actions/authActions';
 import classnames from 'classnames';
 
-const Register = () => {
+const Register = props => {
   const initialFormState = {
     name: '',
     email: '',
